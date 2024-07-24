@@ -15,13 +15,18 @@ if __name__ == "__main__":
 
     # Parameters
     directory = 'gt_via_copulas'  # Specify your folder path
-    copula = 'gaussian'
-    prm_name = 'rho'
+    copula = 'gaussian_exp'
+    #copula = 'clayton'
+    #copula = 'frank'
 
+    prm_name = 'rho'
+    #prm_name = 'theta'
+
+    #flag_save = True
     flag_save = True
 
     start_letters = 'gt_' + copula  # Specify the starting letters to filter files
-    output_file = start_letters + '_vs_%s.png'%(prm_name)
+    output_file = start_letters + '_vs_%s_.png'%(prm_name)
     # List all files in the directory
     all_files = os.listdir(directory)
 
@@ -36,9 +41,12 @@ if __name__ == "__main__":
         file_path = os.path.join(directory, csv_file)
         data = pd.read_csv(file_path)
         param_ = csv_file.split('par1')[1][1:-4]
-        label_ = 'rho: %s'%(param_)
-        # Assuming the CSV files have columns 'Time (Months)' and 'Probability'
-        plt.plot(data['Time (Months)'], data['Probability'], label=label_)
+        label_ = '%s: %s'%(prm_name, param_)
+
+        if (float(param_) < 0.3):
+
+            # Assuming the CSV files have columns 'Time (Months)' and 'Probability'
+            plt.plot(data['Time (Months)'], data['Probability'], label=label_)
 
     # Customize the plot
     plt.xlabel('Time (Months)')

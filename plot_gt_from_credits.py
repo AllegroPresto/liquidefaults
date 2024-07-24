@@ -15,18 +15,27 @@ if __name__ == "__main__":
 
     # Parameters
     directory = 'gt_from_credits'  # Specify your folder path
-    #creditype = 'AUT'
-    #creditype = 'RMB'
-    creditype = 'SME'
+    creditype = 'AUT'
+    creditype = 'RMB'
+    #creditype = 'SME'
+    #creditype = 'CMR'
 
-    min_n_def = 100
-    max_n_def = 5000
+    min_n_def = 400
+    #min_n_def = 1500
+
+    #min_n_def = 2000
+    max_n_def =10000
+
+    #min_n_def = 4000
+    #max_n_def = 7000
 
     #min_n_def = 900
     #max_n_def = 10000
 
     flag_save = True
     #flag_save = False
+    to_exclude =[4249, 328, 1128]
+    to_exclude =[]
 
     start_letters = 'gt_' + creditype  # Specify the starting letters to filter files
     output_file = start_letters + '_' + str(min_n_def) + '_' + str(max_n_def) +'.png'
@@ -44,16 +53,16 @@ if __name__ == "__main__":
         file_ = csv_file.split('ndef_')[1]
         ndef_ = file_.split('.csv')[0]
 
-        if (int(ndef_) >= min_n_def) and (int(ndef_) <= max_n_def):
+        if (int(ndef_) >= min_n_def) and (int(ndef_) <= max_n_def) and int(ndef_)  not in to_exclude:
 
             file_path = os.path.join(directory, csv_file)
             data = pd.read_csv(file_path)
             label_ = creditype + ': n. def. ' + ndef_
             # Assuming the CSV files have columns 'Time (Months)' and 'Probability'
-            plt.plot(data['Time (Months)'], data['Probability'], label=label_)
+            plt.plot(data['Time (Years)'], data['Probability'], label=label_)
 
     # Customize the plot
-    plt.xlabel('Time (Months)')
+    plt.xlabel('Time (Years)')
     plt.ylabel('g(t) Probability density')
     plt.title('Probability Distribution of defaults subsequent a default event (g(t))')
     plt.legend()

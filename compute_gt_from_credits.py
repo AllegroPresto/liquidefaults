@@ -16,49 +16,11 @@ color_list = ['blue', 'red', 'black', 'magenta', 'green', 'brown', 'grey', 'cyan
                   'black', 'magenta', 'green', 'brown', 'grey', 'cyan']
 
 
-def plot_histogram_line(data_1, data_2, data_3, data_4, bins=30, density=True, line_color='blue', line_width=2):
-    """
-    Plot a histogram with only the line connecting the bins.
-
-    Parameters:
-    - data (array-like): Input data for the histogram.
-    - bins (int): Number of bins for the histogram.
-    - density (bool): Whether to normalize the histogram.
-    - line_color (str): Color of the line.
-    - line_width (int): Width of the line.
-    """
-    # Generate the histogram data
-    hist_1, bin_edges_1 = np.histogram(data_1, bins=bins, density=density)
-    hist_2, bin_edges_2 = np.histogram(data_2, bins=bins, density=density)
-    hist_3, bin_edges_3 = np.histogram(data_3, bins=bins, density=density)
-    hist_4, bin_edges_4 = np.histogram(data_4, bins=bins, density=density)
-
-    # Compute the bin centers
-    bin_centers_1 = (bin_edges_1[:-1] + bin_edges_1[1:]) / 2
-    bin_centers_2 = (bin_edges_2[:-1] + bin_edges_2[1:]) / 2
-    bin_centers_3 = (bin_edges_3[:-1] + bin_edges_3[1:]) / 2
-    bin_centers_4 = (bin_edges_4[:-1] + bin_edges_4[1:]) / 2
-
-    # Plot the line connecting the histogram bins
-    plt.plot(bin_centers_1, hist_1, color=line_color, linewidth=line_width)
-    plt.plot(bin_centers_2, hist_2, color=line_color, linewidth=line_width)
-    plt.plot(bin_centers_3, hist_3, color=line_color, linewidth=line_width)
-    plt.plot(bin_centers_4, hist_4, color=line_color, linewidth=line_width)
-
-    # Add labels and title
-    plt.xlabel('Value')
-    plt.ylabel('Density' if density else 'Frequency')
-    plt.title('Histogram Line Plot')
-
-    # Show the plot
-    plt.show()
 
 
 
 
-
-
-def extract_prob_g_r(data, perc_n):
+def extract_prob_g_t(data, perc_n):
 
     data = data.sort_values(by='TimeToDefault').reset_index(drop=True)
     time_to_default = data['TimeToDefault'].values
@@ -75,36 +37,45 @@ def extract_prob_g_r(data, perc_n):
 
     # Step 6: Compute subsequent default times for each default event
     subsequent_default_times = []
+    subsequent_default_times_ = []
     w_data = []
 
     for i in range(N_sample):
 
         if (i % 1000 == 0):
             print('i: %s/%s'%(i, N_sample))
+
         for j in range(i + 1, N_sample):
-            subsequent_default_times.append((time_to_default[j] - time_to_default[i])/365.0)
+            delta_ = (time_to_default[j] - time_to_default[i]) / 365.0
+            subsequent_default_times.append(delta_)
+
+            if (i < int(N_sample/2.0) - 1) and ((j - i)< int(N_sample/2.0)):
+                subsequent_default_times_.append(delta_)
+
             w_ = (N_sample - (j - i))
             w2_= num_credits[i]
             w_data.append(1.0/w_/w2_)
-            #w_data.append(1)
+            #w_data.append(1.0)
 
 
+    #FQ(77)
     #time_bins = np.arange(delta_bin/2.0, time_mat + 1.0*delta_bin/2, delta_bin)
     hist_, bin_edges_ = np.histogram(subsequent_default_times, bins=n_bins_ref_, weights = w_data, density=True)
+    #hist_2, bin_edges_2 = np.histogram(subsequent_default_times_, bins=n_bins_ref_, density=True)
 
     plot_to_chk = False
     if (plot_to_chk):
-        plt.hist(subsequent_default_times, bins=n_bins_ref_, weights=w_data, edgecolor='black', density=True)
 
-        # Adding titles and labels
+
+        plt.hist(subsequent_default_times, bins=n_bins_ref_, weights=w_data, edgecolor='black', density=False)
+
         plt.title('Weighted Histogram')
         plt.xlabel('Data')
         plt.ylabel('Frequency')
+        plt.legend(['Weight', 'No weight'])
         plt.show()
+        FQ(99)
 
-    #delta_bin = bin_edges_[1:] - bin_edges_[:-1]
-    #area_norm = np.dot(np.array(hist_), np.array(delta_bin))
-    #hist_ = hist_/area_norm
 
     bin_centers_w_ = (bin_edges_[:-1] + bin_edges_[1:]) / 2.0
 
@@ -167,15 +138,16 @@ if __name__ == "__main__":
     #df_out = extract_1000_events_det(start_date, end_date, num_events)
 
     perc_n = 1
-    n_default_min = 100
-    n_default_max = 1000
-
-    n_default_min = 900
+    n_default_min = 1000
     n_default_max = 10000
+
+    #n_default_min = 900
+    #n_default_max = 10000
     start_tag = 'AUT'
     start_tag = 'AUT'
-    start_tag = 'RMB'
-    start_tag = 'SME'
+    #start_tag = 'RMB'
+    #start_tag = 'SME'
+    #start_tag = 'CMR'
 
     gt_save = True
     #gt_save = False
@@ -201,7 +173,7 @@ if __name__ == "__main__":
 
         if (data_.shape[0] > n_default_min)  and (data_.shape[0] < n_default_max) and (data_.shape[0] > 20):
             n_cr_s = n_cr_s + 1
-            hist_, bin_cent_, n_defaults_  = extract_prob_g_r(data_, perc_n)
+            hist_, bin_cent_, n_defaults_  = extract_prob_g_t(data_, perc_n)
 
             hist_list.append(hist_)
             bin_c_list.append(bin_cent_)
@@ -211,7 +183,7 @@ if __name__ == "__main__":
             if (gt_save):
                 file_out = r'gt_from_credits/gt_%s_ndef_%s.csv' % (start_tag, n_defaults_)
 
-                g_t_df = pd.DataFrame({'Time (Months)': bin_cent_, 'Probability': hist_})
+                g_t_df = pd.DataFrame({'Time (Years)': bin_cent_, 'Probability': hist_})
                 g_t_df.to_csv(file_out, index=False)
 
 
