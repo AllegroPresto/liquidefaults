@@ -168,20 +168,21 @@ if __name__ == "__main__":
 
     perc_n = 1
     n_default_min = 1000
-    n_default_min = 3000
+    #n_default_min = 110
 
-    n_default_max = 10000
+    #n_default_max = 120
+    #n_default_max = 140
 
     #n_default_min = 900
-    #n_default_max = 10000
-    start_tag = 'AUT'
-    start_tag = 'AUT'
+    n_default_max = 10000
+    #start_tag = 'AUT'
+    #start_tag = 'AUT'
     start_tag = 'RMB'
-    start_tag = 'SME'
-    start_tag = 'CMR'
+    #start_tag = 'SME'
+    #start_tag = 'CMR'
 
+    #flag_save = False
     flag_save = False
-    flag_save = True
 
 
     line_width = 1
@@ -209,9 +210,26 @@ if __name__ == "__main__":
             n_bins_ref_ = int(np.maximum(2.0*np.sqrt(n_def_),20))
             n_bins_ref_ = np.minimum(n_bins_ref_, 50)
 
+
+            """"
+            # PER HISTOGRAMMARE LE DATE DI DEFAULT
+            data_['DefaultDate'] = pd.to_datetime(data_['DefaultDate'])
+            date_numeric = data_['DefaultDate'].map(pd.Timestamp.timestamp)
+
+            hist_, bin_edges_ = np.histogram(date_numeric, bins=n_bins_ref_, density=True)
+            bin_edges_datetime = pd.to_datetime(bin_edges_, unit='s')
+            plt.bar(bin_edges_datetime[:-1], hist_, width=np.diff(bin_edges_datetime), align='edge',edgecolor='black', label=label_)
+            """
+
+
             hist_, bin_edges_ = np.histogram(data_['TimeToDefault']/365.2425, bins=n_bins_ref_, density=True)
             bin_centers_ = (bin_edges_[:-1] + bin_edges_[1:]) / 2.0
-            plt.plot(bin_centers_, hist_, label=label_)
+            bar_width = 0.8 * (bin_centers_[1] - bin_centers_[0]) if len(bin_centers_) > 1 else 0.5
+
+            #plt.plot(bin_centers_, hist_, label=label_)
+            plt.bar(bin_centers_, hist_, label=label_, width=bar_width, edgecolor='black', linewidth=1.0)
+
+
 
     if (n_cr_s  == 0):
 

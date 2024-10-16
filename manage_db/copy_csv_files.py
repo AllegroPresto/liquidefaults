@@ -24,7 +24,9 @@ def unzip_folder(zip_path, extract_to):
 def copy_unzipped_files(source_folder, dest_folder):
     for root, _, files in os.walk(source_folder):
         for file in files:
-            if file.startswith("1_") and "Collateral" not in file:
+            #if file.startswith("1_") and "Collateral" not in file:
+            if file.startswith("1_"):
+
                 shutil.copy(os.path.join(root, file), dest_folder)
 
 
@@ -61,5 +63,5 @@ def main(root_folder, dest_folder):
 
 if __name__ == "__main__":
     root_folder = r"C:\Users\proprietario\Desktop\UCD\lavori\dataset_prepay\EDW_DATA_s2\ESMA_CSVs_s"  # Change this to your root folder path
-    dest_folder = r"C:\Users\proprietario\Desktop\UCD\lavori\dataset_prepay\data_to_analyze"  # Change this to your destination folder path
+    dest_folder = r"C:\Users\proprietario\Desktop\UCD\lavori\dataset_prepay\data_to_analyze2"  # Change this to your destination folder path
     main(root_folder, dest_folder)

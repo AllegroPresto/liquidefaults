@@ -20,11 +20,11 @@ if __name__ == "__main__":
     #creditype = 'SME'
     #creditype = 'CMR'
 
-    min_n_def = 400
+    min_n_def = 4
     #min_n_def = 1500
 
     #min_n_def = 2000
-    max_n_def =10000
+    max_n_def =10000000
 
     #min_n_def = 4000
     #max_n_def = 7000
@@ -32,8 +32,8 @@ if __name__ == "__main__":
     #min_n_def = 900
     #max_n_def = 10000
 
-    flag_save = True
-    #flag_save = False
+    #flag_save = True
+    flag_save = False
     to_exclude =[4249, 328, 1128]
     to_exclude =[]
 
@@ -42,6 +42,8 @@ if __name__ == "__main__":
     # List all files in the directory
     all_files = os.listdir(directory)
 
+    print('directory: ', directory)
+    FQ(99)
     # Filter files that start with the specified letters and end with .csv
     csv_files = [f for f in all_files if f.startswith(start_letters) and f.endswith('.csv')]
 

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/test_correlations.iml" filepath="$PROJECT_DIR$/.idea/test_correlations.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/liquidefaults.iml" filepath="$PROJECT_DIR$/.idea/liquidefaults.iml" />
     </modules>
   </component>
 </project>
