@@ -6,7 +6,7 @@ from scipy.interpolate import interp1d
 np.random.seed(42)
 
 # Global variables (initialization)
-num_events = 10  # Number of events
+num_events = 100  # Number of events
 Tmax = 5   # Maximum time for events (in months)
 
 # Event density
@@ -84,7 +84,7 @@ def Delta_U(i, ti_old, ti_new):
 U0 = U(event_times)
 
 # Debugging: Print initial setup
-print("Initial event times:", event_times)
+#print("Initial event times:", event_times)
 print("Initial system energy U0:", U0)
 
 # Run multiple MC steps to simulate the system
@@ -96,7 +96,7 @@ for step in range(num_iterations):
     MC_step(event_index)
 
 # Print final state
-print("Updated event times:", event_times)
+#print("Updated event times:", event_times)
 print("Updated system energy U0:", U0)
 
 # Verify energy drift by recomputing the total energy
@@ -107,3 +107,15 @@ if np.isclose(U0, U_final):
     print("Energy check passed: No drift detected.")
 else:
     print("Energy drift detected! Check your MC moves.")
+    
+# Plotting the event times
+plt.figure(figsize=(10, 5))
+plt.plot(event_times, 'o-', label='Event Times After MC Simulation', color='blue')
+plt.axhline(y=0, color='grey', linestyle='--')
+plt.title('Event Times After Monte Carlo Simulation')
+plt.xlabel('Event Index')
+plt.ylabel('Event Time')
+plt.legend()
+plt.grid()
+plt.show()
+    
